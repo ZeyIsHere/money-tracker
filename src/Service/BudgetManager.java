@@ -29,4 +29,12 @@ public class BudgetManager {
     public int getRemainingMoney(){
         return budget - getTotalExpense();
     }
+
+    public void showExpense(){
+        for (Expenses expense : expenses) {
+            System.out.println(expense.getName()
+                    + " - " +
+                    expense.getAmount());
+        }
+    }
 }
