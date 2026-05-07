@@ -10,9 +10,24 @@ public class Main {
 
         Scanner input = new Scanner(System.in);
 
-        System.out.print("Enter Weekly Budget: ");
-        int userBudget = input.nextInt();
-        input.nextLine();
+        int userBudget;
+
+        while (true) {
+
+            System.out.print("Enter Weekly Budget: ");
+
+            if (!input.hasNextInt()) {
+
+                System.out.println("Invalid Input!");
+                input.nextLine();
+                continue;
+            }
+
+            userBudget = input.nextInt();
+            input.nextLine();
+
+            break;
+        }
 
         BudgetManager manager = new BudgetManager(userBudget);
         manager.loadExpenses();
@@ -21,17 +36,26 @@ public class Main {
 
             System.out.println("=== MAIN MENU ===");
             System.out.println("1. Add Expense");
-            System.out.println("2. Show Total Expense");
+            System.out.println("2. Show Expenses");
             System.out.println("3. Show Remaining Money");
             System.out.println("4. Exit");
 
             System.out.print("Choose Option: ");
+
+            if (!input.hasNextInt()) {
+
+                System.out.println("Invalid Input!");
+                input.nextLine();
+                continue;
+            }
+
             int choice = input.nextInt();
             input.nextLine();
 
             switch (choice) {
 
                 case 1:
+
                     System.out.print("Add Category: ");
                     String category = input.nextLine();
 
@@ -39,9 +63,19 @@ public class Main {
                     String name = input.nextLine();
 
                     System.out.print("Add Total Expense: ");
-                    int amount = input.nextInt();
 
-                    Expenses expense = new Expenses(category, name, amount);
+                    if (!input.hasNextInt()) {
+
+                        System.out.println("Invalid Amount!");
+                        input.nextLine();
+                        break;
+                    }
+
+                    int amount = input.nextInt();
+                    input.nextLine();
+
+                    Expenses expense =
+                            new Expenses(category, name, amount);
 
                     manager.addExpenses(expense);
 
@@ -50,14 +84,17 @@ public class Main {
                     break;
 
                 case 2:
+
                     manager.showExpense();
 
                     break;
 
                 case 3:
 
-                    System.out.println("Remaining Money: "
-                            + manager.getRemainingMoney());
+                    System.out.println(
+                            "Remaining Money: "
+                                    + manager.getRemainingMoney()
+                    );
 
                     break;
 
@@ -65,7 +102,12 @@ public class Main {
 
                     System.out.println("Exiting...");
                     manager.saveExpenses();
+
                     return;
+
+                default:
+
+                    System.out.println("Invalid Option!");
             }
         }
     }
