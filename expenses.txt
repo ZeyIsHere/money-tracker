@@ -1,2 +1,1 @@
-Food,Apple,3500
-Fuel,Pertamaks,30000
+Food,Apple,1500

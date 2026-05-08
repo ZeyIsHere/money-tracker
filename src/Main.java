@@ -10,40 +10,52 @@ public class Main {
 
         Scanner input = new Scanner(System.in);
 
-        int userBudget;
+        BudgetManager manager =
+                new BudgetManager(0);
 
-        while (true) {
-
-            System.out.print("Enter Weekly Budget: ");
-
-            if (!input.hasNextInt()) {
-
-                System.out.println("Invalid Input!");
-                input.nextLine();
-                continue;
-            }
-
-            userBudget = input.nextInt();
-            input.nextLine();
-
-            break;
-        }
-
-        BudgetManager manager = new BudgetManager(userBudget);
+        manager.loadBudget();
         manager.loadExpenses();
 
-        while (true) {
+        if (manager.getBudget() == 0) {
+            while (true) {
+                System.out.print("Enter Weekly Budget: ");
 
+                if (!input.hasNextInt()) {
+
+                    System.out.println("Invalid Input!");
+                    input.nextLine();
+                    continue;
+                }
+                int userBudget = input.nextInt();
+                input.nextLine();
+                manager.setBudget(userBudget);
+                break;
+            }
+        }
+
+        while (true) {
             System.out.println("=== MAIN MENU ===");
+            System.out.println(
+                    "Weekly Budget: "
+                            + manager.getBudget()
+            );
+            System.out.println(
+                    "Estimated Monthly Budget: "
+                            + manager.getMonthlyBudget()
+            );
+            System.out.println(
+                    "Remaining Money: "
+                            + manager.getRemainingMoney()
+            );
+
+            System.out.println();
             System.out.println("1. Add Expense");
             System.out.println("2. Show Expenses");
-            System.out.println("3. Show Remaining Money");
+            System.out.println("3. Remove Expense");
             System.out.println("4. Exit");
-
             System.out.print("Choose Option: ");
 
             if (!input.hasNextInt()) {
-
                 System.out.println("Invalid Input!");
                 input.nextLine();
                 continue;
@@ -53,61 +65,63 @@ public class Main {
             input.nextLine();
 
             switch (choice) {
-
                 case 1:
-
                     System.out.print("Add Category: ");
                     String category = input.nextLine();
-
                     System.out.print("Add Expense Name: ");
                     String name = input.nextLine();
-
                     System.out.print("Add Total Expense: ");
-
                     if (!input.hasNextInt()) {
-
                         System.out.println("Invalid Amount!");
                         input.nextLine();
                         break;
                     }
-
                     int amount = input.nextInt();
                     input.nextLine();
-
                     Expenses expense =
-                            new Expenses(category, name, amount);
-
+                            new Expenses(
+                                    category,
+                                    name,
+                                    amount
+                            );
                     manager.addExpenses(expense);
-
                     System.out.println("Expense Added!");
-
                     break;
 
                 case 2:
-
                     manager.showExpense();
-
                     break;
 
                 case 3:
-
-                    System.out.println(
-                            "Remaining Money: "
-                                    + manager.getRemainingMoney()
+                    manager.showExpenseWithNumbers();
+                    System.out.print(
+                            "Choose expense to remove: "
                     );
-
+                    if (!input.hasNextInt()) {
+                        System.out.println("Invalid Input!");
+                        input.nextLine();
+                        break;
+                    }
+                    int removeChoice = input.nextInt();
+                    input.nextLine();
+                    manager.removeExpense(
+                            removeChoice - 1
+                    );
+                    System.out.println(
+                            "Expense Removed!"
+                    );
                     break;
 
                 case 4:
-
                     System.out.println("Exiting...");
                     manager.saveExpenses();
-
+                    manager.saveBudget();
                     return;
 
                 default:
-
-                    System.out.println("Invalid Option!");
+                    System.out.println(
+                            "Invalid Option!"
+                    );
             }
         }
     }

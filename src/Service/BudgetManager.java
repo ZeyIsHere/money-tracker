@@ -1,30 +1,54 @@
 package Service;
+
 import Model.Expenses;
+
+import java.io.*;
 import java.util.ArrayList;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 public class BudgetManager {
-    private int  budget;
+    private int budget;
     private ArrayList<Expenses> expenses;
-
-    public BudgetManager(int budget){
+    public BudgetManager(int budget) {
         this.budget = budget;
         expenses = new ArrayList<>();
     }
+    public int getBudget() {
+        return budget;
+    }
+    public int getMonthlyBudget() {
+        return budget * 4;
+    }
+
+
+    public void saveBudget() throws IOException {
+        BufferedWriter writer =
+                new BufferedWriter(
+                        new FileWriter("budget.txt")
+                );
+        writer.write(String.valueOf(budget));
+        writer.close();
+    }
+
+    public void loadBudget() {
+        try {
+            BufferedReader reader =
+                    new BufferedReader(
+                            new FileReader("budget.txt")
+                    );
+            String line = reader.readLine();
+            budget = Integer.parseInt(line);
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("No saved budget found.");
+        }
+    }
 
     public void saveExpenses() throws IOException {
-
         BufferedWriter writer =
                 new BufferedWriter(
                         new FileWriter("expenses.txt")
                 );
-
         for (Expenses expense : expenses) {
-
             writer.write(
                     expense.getCategory()
                             + "," +
@@ -32,72 +56,94 @@ public class BudgetManager {
                             + "," +
                             expense.getAmount()
             );
-
             writer.newLine();
         }
-
         writer.close();
     }
 
     public void loadExpenses() {
-
         try {
-
             BufferedReader reader =
                     new BufferedReader(
                             new FileReader("expenses.txt")
                     );
-
             String line;
-
             while ((line = reader.readLine()) != null) {
-
                 String[] parts = line.split(",");
-
                 String category = parts[0];
                 String name = parts[1];
                 int amount = Integer.parseInt(parts[2]);
-
                 Expenses expense =
                         new Expenses(category, name, amount);
 
                 expenses.add(expense);
             }
-
             reader.close();
-
         } catch (IOException e) {
-
             System.out.println("No previous expense data found.");
         }
     }
 
-    public void addExpenses(Expenses expense){
+    public void addExpenses(Expenses expense) {
         expenses.add(expense);
     }
-    public int getTotalExpense(){
-
+    public int getTotalExpense() {
         int total = 0;
-
-        for (Expenses expense : expenses){
+        for (Expenses expense : expenses) {
             total += expense.getAmount();
         }
-
         return total;
     }
-    public int getRemainingMoney(){
+    public int getRemainingMoney() {
         return budget - getTotalExpense();
     }
 
-    public void showExpense(){
+    public void showExpense() {
+        ArrayList<String> printedCategories =
+                new ArrayList<>();
         for (Expenses expense : expenses) {
-
-            System.out.println(
-                    expense.getCategory()
-                    + " | " +
-                    expense.getName()
-                    + " - " +
-                    expense.getAmount());
+            if (!printedCategories.contains(
+                    expense.getCategory())) {
+                System.out.println(
+                        "=== "
+                                + expense.getCategory()
+                                + " ==="
+                );
+                printedCategories.add(
+                        expense.getCategory()
+                );
+                for (Expenses otherExpense : expenses) {
+                    if (expense.getCategory()
+                            .equals(
+                                    otherExpense.getCategory()
+                            )) {
+                        System.out.println(
+                                "- "
+                                        + otherExpense.getName()
+                                        + " - "
+                                        + otherExpense.getAmount()
+                        );
+                    }
+                }
+                System.out.println();
+            }
         }
+    }
+
+    public void removeExpense(int index){
+        expenses.remove(index);
+    }
+
+    public void showExpenseWithNumbers(){
+        for (int i = 0; i < expenses.size(); i++){
+            Expenses expense = expenses.get(i);
+            System.out.println(
+                    (i + 1) + ". " + expense.getName() + " - " + expense.getAmount()
+            );
+        }
+    }
+
+    public void setBudget(int userBudget) {
+        this.budget = budget;
     }
 }
