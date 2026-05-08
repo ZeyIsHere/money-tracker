@@ -104,6 +104,7 @@ public class BudgetManager {
         for (Expenses expense : expenses) {
             if (!printedCategories.contains(
                     expense.getCategory())) {
+                int categoryTotal = 0;
                 System.out.println(
                         "=== "
                                 + expense.getCategory()
@@ -117,6 +118,8 @@ public class BudgetManager {
                             .equals(
                                     otherExpense.getCategory()
                             )) {
+                        categoryTotal += otherExpense.getAmount();
+                        System.out.println("TOTAL EXPENSE: " + categoryTotal);
                         System.out.println(
                                 "- "
                                         + otherExpense.getName()
@@ -144,6 +147,6 @@ public class BudgetManager {
     }
 
     public void setBudget(int userBudget) {
-        this.budget = budget;
+        this.budget = userBudget;
     }
 }

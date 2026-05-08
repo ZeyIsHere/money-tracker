@@ -52,7 +52,8 @@ public class Main {
             System.out.println("1. Add Expense");
             System.out.println("2. Show Expenses");
             System.out.println("3. Remove Expense");
-            System.out.println("4. Exit");
+            System.out.println("4. Update Budget");
+            System.out.println("5. Exit");
             System.out.print("Choose Option: ");
 
             if (!input.hasNextInt()) {
@@ -113,6 +114,21 @@ public class Main {
                     break;
 
                 case 4:
+                    System.out.print("Enter your new budget: ");
+                    if (!input.hasNextInt()) {
+                        System.out.println("Invalid Input!");
+                        input.nextLine();
+                        break;
+                    }
+
+                    int newBudget = input.nextInt();
+                    input.nextLine();
+                    manager.setBudget(newBudget);
+                    manager.saveBudget();
+                    System.out.println("Budget Updated!");
+                    break;
+
+                case 5:
                     System.out.println("Exiting...");
                     manager.saveExpenses();
                     manager.saveBudget();
