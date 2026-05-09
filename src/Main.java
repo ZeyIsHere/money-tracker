@@ -53,8 +53,9 @@ public class Main {
             System.out.println("2. Show Expenses");
             System.out.println("3. Remove Expense");
             System.out.println("4. Update Budget");
-            System.out.println("5. Exit");
-            System.out.print("Choose Option: ");
+            System.out.println("5. Show Monthly Spending");
+            System.out.println("6. Exit");
+            System.out.println("Choose Option: ");
 
             if (!input.hasNextInt()) {
                 System.out.println("Invalid Input!");
@@ -71,6 +72,8 @@ public class Main {
                     String category = input.nextLine();
                     System.out.print("Add Expense Name: ");
                     String name = input.nextLine();
+                    System.out.print("Enter Expense Date: ");
+                    String date = input.nextLine();
                     System.out.print("Add Total Expense: ");
                     if (!input.hasNextInt()) {
                         System.out.println("Invalid Amount!");
@@ -83,7 +86,8 @@ public class Main {
                             new Expenses(
                                     category,
                                     name,
-                                    amount
+                                    amount,
+                                    date
                             );
                     manager.addExpenses(expense);
                     System.out.println("Expense Added!");
@@ -129,6 +133,14 @@ public class Main {
                     break;
 
                 case 5:
+                    System.out.print("Enter Month/Year(-5-2026)");
+                    String monthYear = input.nextLine();
+                    int monthlyTotal =
+                            manager.getMonthlyExpense(monthYear);
+                    System.out.print("Monthly Spending: " + monthlyTotal);
+                    break;
+
+                case 6:
                     System.out.println("Exiting...");
                     manager.saveExpenses();
                     manager.saveBudget();

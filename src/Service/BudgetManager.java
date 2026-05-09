@@ -55,6 +55,8 @@ public class BudgetManager {
                             expense.getName()
                             + "," +
                             expense.getAmount()
+                            + "," +
+                            expense.getDate()
             );
             writer.newLine();
         }
@@ -73,8 +75,9 @@ public class BudgetManager {
                 String category = parts[0];
                 String name = parts[1];
                 int amount = Integer.parseInt(parts[2]);
+                String date = parts[3];
                 Expenses expense =
-                        new Expenses(category, name, amount);
+                        new Expenses(category, name, amount, date);
 
                 expenses.add(expense);
             }
@@ -121,16 +124,28 @@ public class BudgetManager {
                         categoryTotal += otherExpense.getAmount();
                         System.out.println("TOTAL EXPENSE: " + categoryTotal);
                         System.out.println(
-                                "- "
+                                        "- "
                                         + otherExpense.getName()
                                         + " - "
                                         + otherExpense.getAmount()
+                                        + " - "
+                                        + otherExpense.getDate()
                         );
                     }
                 }
                 System.out.println();
             }
         }
+    }
+
+    public int getMonthlyExpense(String monthYear){
+     int total = 0;
+     for (Expenses expense : expenses){
+         if (expense.getDate().contains(monthYear)){
+             total += expense.getAmount();
+         }
+     }
+        return total;
     }
 
     public void removeExpense(int index){
