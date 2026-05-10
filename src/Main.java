@@ -21,14 +21,18 @@ public class Main {
                 System.out.print("Enter Weekly Budget: ");
 
                 if (!input.hasNextInt()) {
-
-                    System.out.println("Invalid Input!");
-                    input.nextLine();
-                    continue;
+                        System.out.println("Invalid Input!");
+                        input.nextLine();
+                        continue;
                 }
                 int userBudget = input.nextInt();
                 input.nextLine();
+                if (userBudget <= 0){
+                    System.out.println("Budget must not be zero or a negative value!");
+                    continue;
+                }
                 manager.setBudget(userBudget);
+                manager.saveBudget();
                 break;
             }
         }
@@ -54,7 +58,9 @@ public class Main {
             System.out.println("3. Remove Expense");
             System.out.println("4. Update Budget");
             System.out.println("5. Show Monthly Spending");
-            System.out.println("6. Exit");
+            System.out.println("6. Show Biggest Expense");
+            System.out.println("7. Search Expenses");
+            System.out.println("8. Exit");
             System.out.println("Choose Option: ");
 
             if (!input.hasNextInt()) {
@@ -72,8 +78,26 @@ public class Main {
                     String category = input.nextLine();
                     System.out.print("Add Expense Name: ");
                     String name = input.nextLine();
-                    System.out.print("Enter Expense Date: ");
+                    System.out.print("Enter Expense Date: (xx-xx-xxxx)");
                     String date = input.nextLine();
+                    String[] parts = date.split("-");
+                    if (parts.length !=3){
+                        System.out.println("Invalid date format!");
+                        break;
+                    }
+                    try {
+                        int day = Integer.parseInt(parts[0]);
+                        int month = Integer.parseInt(parts[1]);
+                        int Year = Integer.parseInt(parts[2]);
+                        if (day >= 32 || day <= 0 || month >= 12 || month <= 0 || Year >= 9999 || Year <= 0) {
+                            System.out.println("Invalid date format!");
+                            break;
+                        }
+                    }
+                    catch (NumberFormatException e){
+                        System.out.println("Invalid Date Format");
+                        break;
+                    }
                     System.out.print("Add Total Expense: ");
                     if (!input.hasNextInt()) {
                         System.out.println("Invalid Amount!");
@@ -82,6 +106,10 @@ public class Main {
                     }
                     int amount = input.nextInt();
                     input.nextLine();
+                    if (amount <= 0){
+                        System.out.println("Expense amount must not be 0 or a negative value!");
+                    }
+
                     Expenses expense =
                             new Expenses(
                                     category,
@@ -91,6 +119,7 @@ public class Main {
                             );
                     manager.addExpenses(expense);
                     System.out.println("Expense Added!");
+                    manager.saveExpenses();
                     break;
 
                 case 2:
@@ -98,6 +127,12 @@ public class Main {
                     break;
 
                 case 3:
+                    if (manager.getExpenseCount() == 0){
+                        System.out.println("No expenses yet!");
+                        break;
+                    }
+
+
                     manager.showExpenseWithNumbers();
                     System.out.print(
                             "Choose expense to remove: "
@@ -105,16 +140,21 @@ public class Main {
                     if (!input.hasNextInt()) {
                         System.out.println("Invalid Input!");
                         input.nextLine();
+
                         break;
                     }
                     int removeChoice = input.nextInt();
                     input.nextLine();
-                    manager.removeExpense(
-                            removeChoice - 1
-                    );
-                    System.out.println(
-                            "Expense Removed!"
-                    );
+                    if (removeChoice > 0 && removeChoice <= manager.getExpenseCount()){
+                        manager.removeExpense(removeChoice - 1);
+                        System.out.println(
+                                "Expense Removed!"
+                        );
+                    }
+                    else{
+                        System.out.println("Invalid Expense Number!");
+                    }
+                    manager.saveExpenses();
                     break;
 
                 case 4:
@@ -141,6 +181,30 @@ public class Main {
                     break;
 
                 case 6:
+                    Expenses biggest = manager.getBiggestExpenses();
+                    if (biggest == null) {
+                        System.out.println("No expensses found.");
+                    }
+                    else {
+                        System.out.println("Biggest Expense: ");
+                        System.out.println(biggest.getName()
+                                + " - "
+                                + biggest.getAmount()
+                                + " - "
+                                + biggest.getCategory()
+                                + " - "
+                                + biggest.getDate()
+                        );
+                    }
+                    break;
+
+                case 7:
+                    System.out.println("Enter expense name: ");
+                    String keyword = input.nextLine();
+                    manager.searchExpenses(keyword);
+                    break;
+
+                case 8:
                     System.out.println("Exiting...");
                     manager.saveExpenses();
                     manager.saveBudget();

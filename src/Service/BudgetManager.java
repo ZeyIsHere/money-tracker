@@ -19,6 +19,9 @@ public class BudgetManager {
         return budget * 4;
     }
 
+        public int getExpenseCount(){
+        return expenses.size();
+        }
 
     public void saveBudget() throws IOException {
         BufferedWriter writer =
@@ -72,13 +75,16 @@ public class BudgetManager {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
+                if (parts.length != 4) {
+                    System.out.println("Previous Expense is corrupted");
+                    continue;
+                }
                 String category = parts[0];
                 String name = parts[1];
                 int amount = Integer.parseInt(parts[2]);
                 String date = parts[3];
                 Expenses expense =
                         new Expenses(category, name, amount, date);
-
                 expenses.add(expense);
             }
             reader.close();
@@ -109,7 +115,7 @@ public class BudgetManager {
                     expense.getCategory())) {
                 int categoryTotal = 0;
                 System.out.println(
-                        "=== "
+                                "=== "
                                 + expense.getCategory()
                                 + " ==="
                 );
@@ -156,8 +162,42 @@ public class BudgetManager {
         for (int i = 0; i < expenses.size(); i++){
             Expenses expense = expenses.get(i);
             System.out.println(
-                    (i + 1) + ". " + expense.getName() + " - " + expense.getAmount()
+                    (i + 1) + ". " + expense.getName() + " - " + expense.getAmount() + " - " + expense.getDate()
             );
+        }
+    }
+
+    public Expenses getBiggestExpenses(){
+        if (expenses.isEmpty()){
+            return null;
+        }
+        Expenses biggest = expenses.get(0);
+        for (Expenses expense : expenses){
+            if (expense.getAmount() > biggest.getAmount()){
+                biggest = expense;
+            }
+        }
+        return biggest;
+    }
+
+    public void searchExpenses(String keyword){
+        boolean found = false;
+        System.out.println("Search Results: ");
+        for (Expenses expense : expenses){
+            if ( expense.getName() .toLowerCase() .contains(keyword.toLowerCase())){
+            found = true;
+                System.out.println(
+                    expense.getName()
+                    + " - "
+                    + expense.getCategory()
+                    + " - "
+                    + expense.getAmount()
+                    + " - "
+                    + expense.getDate());
+            }
+        }
+        if (!found){
+            System.out.println("No Matches Found");
         }
     }
 
