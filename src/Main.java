@@ -61,7 +61,7 @@ public class Main {
             System.out.println("6. Show Biggest Expense");
             System.out.println("7. Search Expenses");
             System.out.println("8. Exit");
-            System.out.println("Choose Option: ");
+            System.out.print("Choose Option: ");
 
             if (!input.hasNextInt()) {
                 System.out.println("Invalid Input!");
@@ -134,9 +134,7 @@ public class Main {
 
 
                     manager.showExpenseWithNumbers();
-                    System.out.print(
-                            "Choose expense to remove: "
-                    );
+                    System.out.print("Choose expense to remove: ");
                     if (!input.hasNextInt()) {
                         System.out.println("Invalid Input!");
                         input.nextLine();
@@ -175,6 +173,10 @@ public class Main {
                 case 5:
                     System.out.print("Enter Month/Year(-5-2026)");
                     String monthYear = input.nextLine();
+                    if (!monthYear.matches("^(0?[1-9]|1[0-2])-\\d{4}$")) {
+                        System.out.println("Invalid format! Use MM-YYYY");
+                        break;
+                    }
                     int monthlyTotal =
                             manager.getMonthlyExpense(monthYear);
                     System.out.print("Monthly Spending: " + monthlyTotal);
@@ -183,7 +185,7 @@ public class Main {
                 case 6:
                     Expenses biggest = manager.getBiggestExpenses();
                     if (biggest == null) {
-                        System.out.println("No expensses found.");
+                        System.out.println("No expenses found.");
                     }
                     else {
                         System.out.println("Biggest Expense: ");
@@ -199,7 +201,7 @@ public class Main {
                     break;
 
                 case 7:
-                    System.out.println("Enter expense name: ");
+                    System.out.print("Enter expense name: ");
                     String keyword = input.nextLine();
                     manager.searchExpenses(keyword);
                     break;

@@ -76,20 +76,38 @@ public class BudgetManager {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length != 4) {
-                    System.out.println("Previous Expense is corrupted");
+                    System.out.println(
+                            "Skipping corrupted line: "
+                                    + line
+                    );
                     continue;
                 }
-                String category = parts[0];
-                String name = parts[1];
-                int amount = Integer.parseInt(parts[2]);
-                String date = parts[3];
-                Expenses expense =
-                        new Expenses(category, name, amount, date);
-                expenses.add(expense);
+                try {
+                    String category = parts[0];
+                    String name = parts[1];
+                    int amount =
+                            Integer.parseInt(parts[2]);
+                    String date = parts[3];
+                    Expenses expense =
+                            new Expenses(
+                                    category,
+                                    name,
+                                    amount,
+                                    date
+                            );
+                    expenses.add(expense);
+                } catch (NumberFormatException e) {
+                    System.out.println(
+                            "Skipping corrupted line: "
+                                    + line
+                    );
+                }
             }
             reader.close();
         } catch (IOException e) {
-            System.out.println("No previous expense data found.");
+            System.out.println(
+                    "No previous expense data found."
+            );
         }
     }
 
