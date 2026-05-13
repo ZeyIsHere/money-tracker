@@ -26,4 +26,7 @@ public class Expenses {
     public String getDate(){
         return date;
     }
+    public String toString(){
+        return name + " - " + category + " - " + date + " - " + amount;
+    }
 }

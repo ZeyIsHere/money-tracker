@@ -52,21 +52,14 @@ public class BudgetManager {
                         new FileWriter("expenses.txt")
                 );
         for (Expenses expense : expenses) {
-            writer.write(
-                    expense.getCategory()
-                            + "," +
-                            expense.getName()
-                            + "," +
-                            expense.getAmount()
-                            + "," +
-                            expense.getDate()
-            );
+            writer.write(toString());
             writer.newLine();
         }
         writer.close();
     }
 
     public void loadExpenses() {
+        expenses.clear();
         try {
             BufferedReader reader =
                     new BufferedReader(
@@ -111,7 +104,7 @@ public class BudgetManager {
         }
     }
 
-    public void addExpenses(Expenses expense) {
+    public void addExpense(Expenses expense) {
         expenses.add(expense);
     }
     public int getTotalExpense() {
@@ -147,14 +140,7 @@ public class BudgetManager {
                             )) {
                         categoryTotal += otherExpense.getAmount();
                         System.out.println("TOTAL EXPENSE: " + categoryTotal);
-                        System.out.println(
-                                        "- "
-                                        + otherExpense.getName()
-                                        + " - "
-                                        + otherExpense.getAmount()
-                                        + " - "
-                                        + otherExpense.getDate()
-                        );
+                        System.out.println(toString());
                     }
                 }
                 System.out.println();
@@ -179,9 +165,7 @@ public class BudgetManager {
     public void showExpenseWithNumbers(){
         for (int i = 0; i < expenses.size(); i++){
             Expenses expense = expenses.get(i);
-            System.out.println(
-                    (i + 1) + ". " + expense.getName() + " - " + expense.getAmount() + " - " + expense.getDate()
-            );
+            System.out.println((i + 1) + toString());
         }
     }
 
@@ -198,20 +182,34 @@ public class BudgetManager {
         return biggest;
     }
 
+    public boolean isDuplicateExpense(
+            String category,
+            String name,
+            int amount,
+            String date
+    ) {
+        for (Expenses expense : expenses) {
+            if (expense.getCategory().equals(category)
+                    && expense.getName().equals(name)
+                    && expense.getAmount() == amount
+                    && expense.getDate().equals(date)) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+
     public void searchExpenses(String keyword){
         boolean found = false;
         System.out.println("Search Results: ");
         for (Expenses expense : expenses){
             if ( expense.getName() .toLowerCase() .contains(keyword.toLowerCase())){
             found = true;
-                System.out.println(
-                    expense.getName()
-                    + " - "
-                    + expense.getCategory()
-                    + " - "
-                    + expense.getAmount()
-                    + " - "
-                    + expense.getDate());
+                System.out.println(toString());
             }
         }
         if (!found){

@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException   {
 
         Scanner input = new Scanner(System.in);
 
@@ -102,6 +102,12 @@ public class Main {
                     if (!input.hasNextInt()) {
                         System.out.println("Invalid Amount!");
                         input.nextLine();
+                        try{
+                            Thread.sleep(1000);
+                        }
+                        catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
                         break;
                     }
                     int amount = input.nextInt();
@@ -117,9 +123,31 @@ public class Main {
                                     amount,
                                     date
                             );
-                    manager.addExpenses(expense);
+                    if (manager.isDuplicateExpense(category, name, amount, date)){
+                        System.out.println ("Warning: Expense already exists!");
+                        System.out.println ("Add Anyway? (Y/N)");
+                        String Confirm = input.nextLine();
+                        if (Confirm.equalsIgnoreCase("n")){
+                            System.out.println ("Canceled!");
+                            try{
+                                Thread.sleep(1000);
+                            }
+                            catch (InterruptedException e){
+                                e.printStackTrace();
+                            }
+                            break;
+                        }
+                    }
+
+                    manager.addExpense(expense);
                     System.out.println("Expense Added!");
                     manager.saveExpenses();
+                    try{
+                        Thread.sleep(1000);
+                    }
+                    catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
                     break;
 
                 case 2:
@@ -129,6 +157,12 @@ public class Main {
                 case 3:
                     if (manager.getExpenseCount() == 0){
                         System.out.println("No expenses yet!");
+                        try{
+                            Thread.sleep(1000);
+                        }
+                        catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
                         break;
                     }
 
@@ -138,7 +172,12 @@ public class Main {
                     if (!input.hasNextInt()) {
                         System.out.println("Invalid Input!");
                         input.nextLine();
-
+                        try{
+                            Thread.sleep(1000);
+                        }
+                        catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
                         break;
                     }
                     int removeChoice = input.nextInt();
@@ -148,9 +187,22 @@ public class Main {
                         System.out.println(
                                 "Expense Removed!"
                         );
+                        try{
+                            Thread.sleep(1000);
+                        }
+                        catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
                     }
+
                     else{
                         System.out.println("Invalid Expense Number!");
+                    }
+                    try{
+                        Thread.sleep(1000);
+                    }
+                    catch (InterruptedException e){
+                        e.printStackTrace();
                     }
                     manager.saveExpenses();
                     break;
@@ -160,6 +212,12 @@ public class Main {
                     if (!input.hasNextInt()) {
                         System.out.println("Invalid Input!");
                         input.nextLine();
+                        try{
+                            Thread.sleep(1000);
+                        }
+                        catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
                         break;
                     }
 
@@ -175,11 +233,23 @@ public class Main {
                     String monthYear = input.nextLine();
                     if (!monthYear.matches("^(0?[1-9]|1[0-2])-\\d{4}$")) {
                         System.out.println("Invalid format! Use MM-YYYY");
+                        try{
+                            Thread.sleep(1000);
+                        }
+                        catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
                         break;
                     }
                     int monthlyTotal =
                             manager.getMonthlyExpense(monthYear);
                     System.out.print("Monthly Spending: " + monthlyTotal);
+                    try{
+                        Thread.sleep(1000);
+                    }
+                    catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
                     break;
 
                 case 6:
@@ -198,12 +268,24 @@ public class Main {
                                 + biggest.getDate()
                         );
                     }
+                    try{
+                        Thread.sleep(1000);
+                    }
+                    catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
                     break;
 
                 case 7:
                     System.out.print("Enter expense name: ");
                     String keyword = input.nextLine();
                     manager.searchExpenses(keyword);
+                    try{
+                        Thread.sleep(1000);
+                    }
+                    catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
                     break;
 
                 case 8:
@@ -216,7 +298,94 @@ public class Main {
                     System.out.println(
                             "Invalid Option!"
                     );
+                    try{
+                        Thread.sleep(1000);
+                    }
+                    catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
             }
         }
     }
+    public static void addExpenseMenu(
+            Scanner input,
+            BudgetManager manager
+    ) throws IOException {
+        System.out.print("Add Category: ");
+        String category = input.nextLine();
+        System.out.print("Add Expense Name: ");
+        String name = input.nextLine();
+        System.out.print("Enter Expense Date: ");
+        String date = input.nextLine();
+        String[] parts = date.split("-");
+        if (parts.length != 3) {
+            System.out.println(
+                    "Invalid date format!"
+            );
+            return;
+        }
+        try {
+            int day = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+            int year = Integer.parseInt(parts[2]);
+            if ((day >= 32 || day <= 0)
+                    || (month > 12 || month <= 0)
+                    || (year >= 9999 || year <= 0)) {
+                System.out.println(
+                        "Invalid date format!"
+                );
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println(
+                    "Date must contain numbers only!"
+            );
+            return;
+        }
+        System.out.print("Add Total Expense: ");
+        if (!input.hasNextInt()) {
+            System.out.println("Invalid Amount!");
+            input.nextLine();
+            return;
+        }
+        int amount = input.nextInt();
+        input.nextLine();
+        if (amount <= 0) {
+            System.out.println(
+                    "Expense must be positive!"
+            );
+            return;
+        }
+        Expenses expense =
+                new Expenses(
+                        category,
+                        name,
+                        amount,
+                        date
+                );
+        if (manager.isDuplicateExpense(
+                category,
+                name,
+                amount,
+                date
+        )) {
+            System.out.println(
+                    "Warning: Similar expense already exists."
+            );
+            System.out.print(
+                    "Add anyway? (y/n): "
+            );
+            String confirm = input.nextLine();
+            if (confirm.equalsIgnoreCase("n")) {
+                System.out.println(
+                        "Expense addition cancelled."
+                );
+                return;
+            }
+        }
+        manager.addExpense(expense);
+        manager.saveExpenses();
+        System.out.println("Expense Added!");
+    }
+
 }
