@@ -6,7 +6,7 @@ public class Expenses {
     private String category;
     private String date;
 
-    public Expenses(String category, String name, int amount, String date){
+    public Expenses(String category, String name, int amount, String date) {
         this.name = name;
         this.amount = amount;
         this.category = category;
@@ -16,17 +16,20 @@ public class Expenses {
     public String getName() {
         return name;
     }
-    public int getAmount(){
+
+    public int getAmount() {
         return amount;
     }
 
-    public String getCategory(){
+    public String getCategory() {
         return category;
     }
-    public String getDate(){
+
+    public String getDate() {
         return date;
     }
-    public String toString(){
+
+    public String toString() {
         return name + " - " + category + " - " + date + " - " + amount;
     }
 }
