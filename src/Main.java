@@ -59,8 +59,10 @@ public class Main {
             System.out.println("4. Update Budget");
             System.out.println("5. Show Monthly Spending");
             System.out.println("6. Show Biggest Expense");
-            System.out.println("7. Search Expenses");
-            System.out.println("8. Exit");
+            System.out.println("7. Show Expense Statistics");
+            System.out.println("8. Search Expenses");
+            System.out.println("9. Edit an Expense");
+            System.out.println("10. Exit");
             System.out.print("Choose Option: ");
 
             if (!input.hasNextInt()) {
@@ -97,11 +99,24 @@ public class Main {
                     break;
 
                 case 7:
+                        manager.menuShowExpenseStatistics(manager);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                        break;
+                case 8:
                     manager.searchExpensesMenu(input, manager);
                     break;
 
-                case 8:
+                case 9:
+                    manager.editExpense(input);
+                    break;
+
+                case 10:
                     manager.exitMenu(manager);
+                    return;
 
                 default:
                     System.out.println(
