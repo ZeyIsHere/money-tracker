@@ -6,6 +6,7 @@ import Model.
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.HashMap;
 
 public class BudgetManager {
     private int budget;
@@ -14,6 +15,10 @@ public class BudgetManager {
     public BudgetManager(int budget) {
         this.budget = budget;
         expenses = new ArrayList<>();
+    }
+
+    public Expenses getExpense(int index) {
+        return expenses.get(index);
     }
 
     public int getBudget() {
@@ -57,7 +62,7 @@ public class BudgetManager {
                         new FileWriter("expenses.txt")
                 );
         for (Expenses expense : expenses) {
-            writer.write(toString());
+            writer.write(expense.toString());
             writer.newLine();
         }
         writer.close();
@@ -147,7 +152,7 @@ public class BudgetManager {
                             )) {
                         categoryTotal += otherExpense.getAmount();
                         System.out.println("TOTAL EXPENSE: " + categoryTotal);
-                        System.out.println(toString());
+                        System.out.println(expense.toString());
                     }
                 }
                 System.out.println();
@@ -172,7 +177,7 @@ public class BudgetManager {
     public void showExpenseWithNumbers() {
         for (int i = 0; i < expenses.size(); i++) {
             Expenses expense = expenses.get(i);
-            System.out.println((i + 1) + toString());
+            System.out.println((i + 1) + expense.toString());
         }
     }
 
@@ -215,12 +220,204 @@ public class BudgetManager {
         for (Expenses expense : expenses) {
             if (expense.getName().toLowerCase().contains(keyword.toLowerCase())) {
                 found = true;
-                System.out.println(toString());
+                System.out.println(expense.toString());
             }
         }
         if (!found) {
             System.out.println("No Matches Found");
         }
+    }
+
+    public void updateExpense(
+            int index,
+            Expenses expense
+    ) {
+        expenses.set(index, expense);
+    }
+
+    public void editExpense(Scanner input) throws IOException {
+
+        if (getExpenseCount() == 0) {
+            System.out.println("No expenses yet!");
+            return;
+        }
+
+        showExpenseWithNumbers();
+
+        System.out.print("Choose an expense to edit: ");
+
+        if (!input.hasNextInt()) {
+            System.out.println("Invalid Input!");
+            input.nextLine();
+            return;
+        }
+
+        int expenseChoice = input.nextInt();
+        input.nextLine();
+
+        if (expenseChoice <= 0 ||
+                expenseChoice > getExpenseCount()) {
+
+            System.out.println(
+                    "Invalid Expense Number!"
+            );
+            return;
+        }
+
+        int index = expenseChoice - 1;
+
+        Expenses selected =
+                getExpense(index);
+
+        System.out.println(
+                "\n=== CURRENT EXPENSE ==="
+        );
+
+        System.out.println(
+                "Category: "
+                        + selected.getCategory()
+        );
+
+        System.out.println(
+                "Name: "
+                        + selected.getName()
+        );
+
+        System.out.println(
+                "Amount: "
+                        + selected.getAmount()
+        );
+
+        System.out.println(
+                "Date: "
+                        + selected.getDate()
+        );
+
+        System.out.println();
+
+        System.out.print(
+                "New Category: "
+        );
+        String category =
+                input.nextLine();
+
+        System.out.print(
+                "New Name: "
+        );
+        String name =
+                input.nextLine();
+
+        System.out.print(
+                "New Amount: "
+        );
+
+        if (!input.hasNextInt()) {
+            System.out.println(
+                    "Invalid Amount!"
+            );
+            input.nextLine();
+            return;
+        }
+
+        int amount =
+                input.nextInt();
+        input.nextLine();
+
+        if (amount <= 0) {
+            System.out.println(
+                    "Amount must be positive!"
+            );
+            return;
+        }
+
+        System.out.print(
+                "New Date (DD-MM-YYYY): "
+        );
+        String date =
+                input.nextLine();
+
+        Expenses editedExpense =
+                new Expenses(
+                        category,
+                        name,
+                        amount,
+                        date
+                );
+
+        updateExpense(
+                index,
+                editedExpense
+        );
+
+        saveExpenses();
+
+        System.out.println(
+                "Expense Updated!"
+        );
+    }
+
+    public void expenseStatistics(){
+
+        if (expenses.isEmpty()) {
+            System.out.println("No expenses recorded.");
+            return;
+        }
+
+        HashMap<String, Integer> categoryTotals =
+                new HashMap<>();
+
+        int grandTotal = 0;
+
+        for (Expenses expense : expenses) {
+
+            grandTotal += expense.getAmount();
+
+            String category =
+                    expense.getCategory();
+
+            categoryTotals.put(
+                    category,
+                    categoryTotals.getOrDefault(
+                            category,
+                            0
+                    ) + expense.getAmount()
+            );
+        }
+
+        System.out.println(
+                "\n=== EXPENSE STATISTICS ==="
+        );
+
+        for (String category :
+                categoryTotals.keySet()) {
+
+            int total =
+                    categoryTotals.get(category);
+
+            double percentage =
+                    (double) total /
+                            grandTotal * 100;
+
+            System.out.printf(
+                    "%s: Rp %,d (%.1f%%)%n",
+                    category,
+                    total,
+                    percentage
+            );
+        }
+
+        System.out.println(
+                "-------------------------"
+        );
+
+        System.out.printf(
+                "TOTAL: Rp %,d%n",
+                grandTotal
+        );
+    }
+
+    public static void menuShowExpenseStatistics(BudgetManager manager){
+        manager.expenseStatistics();
     }
 
     public static void addExpenseMenu(
@@ -231,7 +428,7 @@ public class BudgetManager {
         String category = input.nextLine();
         System.out.print("Add Expense Name: ");
         String name = input.nextLine();
-        System.out.print("Enter Expense Date: ");
+        System.out.print("Enter Expense Date: (DD-MM-YYYY)");
         String date = input.nextLine();
         String[] parts = date.split("-");
         if (parts.length != 3) {
@@ -304,7 +501,7 @@ public class BudgetManager {
         System.out.println("Expense Added!");
     }
 
-    public static void removeExpenseMenu(Scanner input, BudgetManager manager) throws IOException{
+   public static void removeExpenseMenu(Scanner input, BudgetManager manager) throws IOException{
         if (manager.getExpenseCount() == 0) {
             System.out.println("No expenses yet!");
             try {

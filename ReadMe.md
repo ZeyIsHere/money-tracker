@@ -1,91 +1,52 @@
- Expense Manager (Java CLI)
+# Budget Tracker
 
-A console-based expense tracking application built with Java.
+A simple Java console-based budget management application that helps users track expenses, manage budgets, and analyze spending habits.
 
-This project allows users to:
-- Set and update weekly budgets
-- Add and remove expenses
-- Track monthly spending
-- Search expenses
-- Detect duplicate expenses
-- View biggest expenses
-- Save/load data using text files
-- Handle corrupted save data safely
+## Features
 
----
+* Set and update weekly budget
+* Automatic monthly budget estimation
+* Add expenses with:
 
- Features
+  * Category
+  * Name
+  * Amount
+  * Date
+* Remove expenses
+* Edit existing expenses
+* Search expenses by name
+* Display expenses grouped by category
+* Show remaining budget
+* Show monthly spending totals
+* Find the biggest expense
+* View expense statistics by category
+* Detect duplicate expense entries
+* Save budget and expenses to files
+* Automatically load saved data on startup
 
- Budget Management
-- Set weekly budget
-- Update budget anytime
-- View remaining balance
-- Estimate monthly budget
+## Technologies Used
 
- Expense Tracking
-- Add expenses with:
-    - Category
-    - Name
-    - Amount
-    - Date
-- Remove expenses
-- Display expenses by category
+* Java
+* ArrayList
+* HashMap
+* File I/O
+* Object-Oriented Programming (OOP)
 
- Analytics
-- Show biggest expense
-- Calculate monthly spending
-- Search expenses by keyword
+## Data Storage
 
- Validation & Error Handling
-- Prevent invalid numeric input
-- Validate date format
-- Handle corrupted save files
-- Detect duplicate expenses
-- Prevent crashes from malformed data
+The application stores data locally using:
 
----
+* `budget.txt`
+* `expenses.txt`
 
-Technologies Used
+Data is automatically saved and loaded between sessions.
 
-- Java
-- ArrayList
-- File I/O
-- OOP Principles
-- Exception Handling
+## Future Improvements
 
----
+* Expense sorting
+* Export reports
+* Daily spending reports
+* Budget warnings
+* Improved date handling with LocalDate
+* Graphical User Interface (GUI)
 
- Project Structure
-
-Main.java
-- Handles menus and user interaction
-
-BudgetManager.java
-- Handles expense logic, calculations, saving/loading
-
-Expenses.java
-- Expense data model
-
----
-
- How To Run
-
-1. Clone repository
-2. Open project in IntelliJ IDEA
-3. Run Main.java
-
----
-
- Future Improvements
-
-- GUI version using JavaFX
-- Database support
-- Sorting expenses
-- Better statistics dashboard
-- CSV export support
-
----
-
-Author
-
-Made by Roki Wijaya
